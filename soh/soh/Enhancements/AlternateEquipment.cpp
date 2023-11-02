@@ -15,7 +15,7 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodLeftHand(Player* player) {
     switch (player->leftHandType) {
         case PLAYER_MODELTYPE_LH_SWORD:   // Left hand is holding a one-handed sword.
         case PLAYER_MODELTYPE_LH_SWORD_2: // One of these is unused, but the same as the other.
-            switch (CUR_EQUIP_VALUE(EQUIP_SWORD)) {
+            switch (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD)) {
                 case PLAYER_SWORD_KOKIRI:
                     if (ResourceGetIsCustomByName(gLinkKokiriSwordDL)) {
                         return true;
@@ -27,7 +27,7 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodLeftHand(Player* player) {
             }
             break;
         case PLAYER_MODELTYPE_LH_BGS:
-            if (CUR_EQUIP_VALUE(EQUIP_SWORD) == PLAYER_SWORD_BIGGORON) {
+            if (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD) == PLAYER_SWORD_BIGGORON) {
                 if (ResourceGetIsCustomByName(gLinkBrokenLongswordDL)) {
                     return true;
                 } else if (ResourceGetIsCustomByName(gLinkLongswordDL)) {
@@ -63,16 +63,16 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodRightHand(Player* player) {
 
     switch (player->rightHandType) {
         case PLAYER_MODELTYPE_RH_SHIELD:
-            if (CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_DEKU) {
+            if (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_DEKU) {
                 if (ResourceGetIsCustomByName(gLinkDekuShieldDL)) {
                     return true;
                 }
-            } else if ((CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_HYLIAN) &&
+            } else if ((CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_HYLIAN) &&
                        !Player_IsChildWithHylianShield(player)) {
                 if (ResourceGetIsCustomByName(gLinkHylianShieldDL)) {
                     return true;
                 }
-            } else if ((CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_MIRROR)) {
+            } else if ((CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_MIRROR)) {
                 if (ResourceGetIsCustomByName(gLinkMirrorShieldDL)) {
                     return true;
                 }
@@ -118,7 +118,7 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodLeftHandPause(Player* player) {
         return false;
     }
 
-    switch (CUR_EQUIP_VALUE(EQUIP_SWORD)) {
+    switch (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD)) {
         case PLAYER_SWORD_KOKIRI:
             if (ResourceGetIsCustomByName(gLinkKokiriSwordDL)) {
                 return true;
@@ -147,15 +147,15 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodRightHandPause(Player* player) 
         return false;
     }
 
-    if (CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_DEKU) {
+    if (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_DEKU) {
         if (ResourceGetIsCustomByName(gLinkDekuShieldDL)) {
             return true;
         }
-    } else if ((CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_HYLIAN) && !Player_IsChildWithHylianShield(player)) {
+    } else if ((CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_HYLIAN) && !Player_IsChildWithHylianShield(player)) {
         if (ResourceGetIsCustomByName(gLinkHylianShieldDL)) {
             return true;
         }
-    } else if ((CUR_EQUIP_VALUE(EQUIP_SHIELD) == PLAYER_SHIELD_MIRROR)) {
+    } else if ((CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD) == PLAYER_SHIELD_MIRROR)) {
         if (ResourceGetIsCustomByName(gLinkMirrorShieldDL)) {
             return true;
         }
@@ -209,7 +209,7 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodSheathSword(Player* player) {
         return false;
     }
 
-    switch (CUR_EQUIP_VALUE(EQUIP_SWORD)) {
+    switch (CUR_EQUIP_VALUE(EQUIP_TYPE_SWORD)) {
         case PLAYER_SWORD_KOKIRI:
             if (!(ResourceGetIsCustomByName(gLinkKokiriSwordSheathDL) &&
                   ResourceGetIsCustomByName(gLinkKokiriSwordInSheathDL))) {
@@ -238,7 +238,7 @@ uint8_t AlternateEquipment_CanUseNewLoadingMethodSheathShield(Player* player) {
         return false;
     }
 
-    switch (CUR_EQUIP_VALUE(EQUIP_SHIELD)) {
+    switch (CUR_EQUIP_VALUE(EQUIP_TYPE_SHIELD)) {
         case PLAYER_SHIELD_DEKU:
             if (!ResourceGetIsCustomByName(gLinkDekuShieldOnBackDL)) {
                 return false;
