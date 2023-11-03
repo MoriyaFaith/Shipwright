@@ -1,4 +1,5 @@
 #include "z_arms_hook.h"
+#include "soh_assets.h"
 #include "objects/object_link_boy/object_link_boy.h"
 
 #define FLAGS (ACTOR_FLAG_UPDATE_WHILE_CULLED | ACTOR_FLAG_DRAW_WHILE_CULLED)
@@ -10,6 +11,18 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play);
 
 void ArmsHook_Wait(ArmsHook* this, PlayState* play);
 void ArmsHook_Shoot(ArmsHook* this, PlayState* play);
+
+uint8_t ArmsHook_CanUseNewLoadingMethod(Gfx* arg);
+
+// Alternate Equipment Loading DLists.
+Gfx* sHookshotTipDLs[] = {
+    gLinkHookshotTipDL,
+    gLinkHookshotSmallTipDL,
+};
+Gfx* sHookshotChainDLs[] = {
+    gLinkHookshotChainDL,
+    gLinkHookshotSmallChainDL,
+};
 
 const ActorInit Arms_Hook_InitVars = {
     ACTOR_ARMS_HOOK,
@@ -58,6 +71,15 @@ static Vec3f D_80865B88 = { 0.0f, 500.0f, -3000.0f };
 static Vec3f D_80865B94 = { 0.0f, -500.0f, -3000.0f };
 static Vec3f D_80865BA0 = { 0.0f, 500.0f, 1200.0f };
 static Vec3f D_80865BAC = { 0.0f, -500.0f, 1200.0f };
+
+// Alternate Equipment Loading function.
+// AltEquip TODO Try and figure out a way to not need alternative models for the tip and chain.
+uint8_t ArmsHook_CanUseNewLoadingMethod(Gfx* arg) {
+    if (!CVarGetInteger("gAltLinkEquip", 1)) {
+        return false;
+    }
+    return ResourceGetIsCustomByName(arg);
+}
 
 void ArmsHook_SetupAction(ArmsHook* this, ArmsHookActionFunc actionFunc) {
     this->actionFunc = actionFunc;
@@ -326,7 +348,15 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play) {
         Gfx_SetupDL_25Opa(play->state.gfxCtx);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotTipDL);
+        // > Use an alternate set of DLs.
+        // > Hookshot tips are seperate between ages because they can't be properly scaled.
+        // AltEquip TODO: Why not? Shouldn't we try and solve that instead?
+        if (ArmsHook_CanUseNewLoadingMethod(sHookshotTipDLs[gSaveContext.linkAge])) { 
+            // Use Alternate Equipment Loading behavior.
+            gSPDisplayList(POLY_OPA_DISP++, sHookshotTipDLs[gSaveContext.linkAge]);
+        } else { // Use vanilla behavior.
+            gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotTipDL);
+        }
         Matrix_Translate(this->actor.world.pos.x, this->actor.world.pos.y, this->actor.world.pos.z, MTXMODE_NEW);
         Math_Vec3f_Diff(&player->unk_3C8, &this->actor.world.pos, &sp78);
         sp58 = SQ(sp78.x) + SQ(sp78.z);
@@ -336,7 +366,12 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play) {
         Matrix_Scale(0.015f, 0.015f, sqrtf(SQ(sp78.y) + sp58) * 0.01f, MTXMODE_APPLY);
         gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-        gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotChainDL);
+        if (ArmsHook_CanUseNewLoadingMethod(sHookshotChainDLs[gSaveContext.linkAge])) { 
+            // Use Alternate Equipment Loading behavior.
+            gSPDisplayList(POLY_OPA_DISP++, sHookshotChainDLs[gSaveContext.linkAge]);
+        } else { // Use vanilla behavior.
+            gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotChainDL);
+        }
 
         CLOSE_DISPS(play->state.gfxCtx);
     }
