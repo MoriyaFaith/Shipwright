@@ -2542,40 +2542,18 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
                             // Item is Slingshot
                             if (projectedHeadPos.z < -4.0f && this->unk_6AD != 0) {
                                 if (Player_CanUseNewLoadingMethodFirstPerson(this)) {
-                                    OPEN_DISPS(play->state.gfxCtx);
-
-                                    // rescale child items for adult, otherwise clipping occurs
-                                    if (LINK_IS_ADULT) {
-                                        Matrix_Scale(1.35f, 1.35f, 1.35f, MTXMODE_APPLY);
-                                    }
-
-                                    gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
-                                              G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-                                    gSPDisplayList(POLY_OPA_DISP++, gLinkSlingshotDL);
-
-                                    CLOSE_DISPS(play->state.gfxCtx);
+                                    Player_DrawChildItem(play, gLinkSlingshotDL);
                                 }
                             } else {
-                                OPEN_DISPS(play->state.gfxCtx);
-
-                                // rescale child items for adult, otherwise clipping occurs
-                                if (LINK_IS_ADULT) {
-                                    Matrix_Scale(1.35f, 1.35f, 1.35f, MTXMODE_APPLY);
-                                }
-
-                                gSPMatrix(POLY_OPA_DISP++, MATRIX_NEWMTX(play->state.gfxCtx),
-                                          G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
-                                gSPDisplayList(POLY_OPA_DISP++, gLinkSlingshotDL);
-
-                                CLOSE_DISPS(play->state.gfxCtx);
+                                Player_DrawChildItem(play, gLinkSlingshotDL);
                             }
                         } else { // Item is Bow
                             if (projectedHeadPos.z < 0.0f && this->unk_6AD != 0) {
                                 if (Player_CanUseNewLoadingMethodFirstPerson(this)) {
-                                    Player_DrawRightHandItem(play, gLinkBowDL);
+                                    Player_DrawAdultItem(play, gLinkBowDL);
                                 }
                             } else {
-                                Player_DrawRightHandItem(play, gLinkBowDL);
+                                Player_DrawAdultItem(play, gLinkBowDL);
                             }
                         }
                         break;
@@ -2634,10 +2612,16 @@ void Player_PostLimbDrawGameplay(PlayState* play, s32 limbIndex, Gfx** dList, Ve
 
                 this->unk_85C = -0.5f;
             }
+            if (!LINK_IS_ADULT && this->itemAction != PLAYER_IA_SLINGSHOT) {
+                Matrix_Scale(1.0f / 1.35f, this->unk_858 / 1.35f, 1.0f / 1.35f, MTXMODE_APPLY);
+            }else if (LINK_IS_ADULT && this->itemAction == PLAYER_IA_SLINGSHOT) {
+                Matrix_Scale(1.35f, this->unk_858 * 1.35f, 1.35f, MTXMODE_APPLY);
+            }
+            else {
+                Matrix_Scale(1.0f, this->unk_858, 1.0f, MTXMODE_APPLY);
+            }
 
-            Matrix_Scale(1.0f, this->unk_858, 1.0f, MTXMODE_APPLY);
-
-            if (!LINK_IS_ADULT) {
+            if (this->itemAction == PLAYER_IA_SLINGSHOT) {
                 Matrix_RotateZ(this->unk_858 * -0.2f, MTXMODE_APPLY);
             }
 
