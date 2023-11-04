@@ -222,13 +222,13 @@ void from_json(const json& j, Inventory& inventory) {
 
 void to_json(json& j, const SohStats& sohStats) {
     j = json{
-        {"locationsSkipped", sohStats.locationsSkipped},
+        //{"locationsSkipped", sohStats.locationsSkipped},
         {"fileCreatedAt", sohStats.fileCreatedAt},
     };
 }
 
 void from_json(const json& j, SohStats& sohStats) {
-    j.at("locationsSkipped").get_to(sohStats.locationsSkipped);
+    //j.at("locationsSkipped").get_to(sohStats.locationsSkipped);
     j.at("fileCreatedAt").get_to(sohStats.fileCreatedAt);
 }
 
@@ -557,7 +557,8 @@ void GameInteractorAnchor::HandleRemoteJson(nlohmann::json payload) {
         }
     }
     if (payload["type"] == "SKIP_LOCATION" && GameInteractor::IsSaveLoaded()) {
-        gSaveContext.sohStats.locationsSkipped[payload["locationIndex"].get<uint32_t>()] = payload["skipped"].get<bool>();
+        gSaveContext.checkTrackerData[payload["locationIndex"].get<uint32_t>()].skipped =
+            payload["skipped"].get<bool>();
     }
     if (payload["type"] == "UPDATE_BEANS_BOUGHT" && GameInteractor::IsSaveLoaded()) {
         BEANS_BOUGHT = payload["amount"].get<uint8_t>();
@@ -661,14 +662,14 @@ void Anchor_ParseSaveStateFromRemote(nlohmann::json payload) {
     }
 
     for (int i = 0; i < 746; i++) {
-        if (!gSaveContext.sohStats.locationsSkipped[i]) {
-            gSaveContext.sohStats.locationsSkipped[i] = loadedData.sohStats.locationsSkipped[i];
+        if (!gSaveContext.checkTrackerData[i].skipped) {
+            gSaveContext.checkTrackerData[i].skipped = loadedData.checkTrackerData[i].skipped;
         }
     }
     gSaveContext.sohStats.fileCreatedAt = loadedData.sohStats.fileCreatedAt;
 
     // Restore master sword state
-    u8 hasMasterSword = CHECK_OWNED_EQUIP(EQUIP_SWORD, 1);
+    u8 hasMasterSword = CHECK_OWNED_EQUIP(EQUIP_TYPE_SWORD, 1);
     if (hasMasterSword) {
         loadedData.inventory.equipment |= 0x2;
     } else {
