@@ -350,7 +350,7 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play) {
         }
         //makes sure hookshot chain length works properly
         if (LINK_IS_CHILD && CVarGetInteger("gAltLinkEquip", 1))
-            Matrix_Scale(1.0f, 1.0f, 1.35f, MTXMODE_APPLY);
+            Matrix_Scale(1.35f, 1.35f, 1.35f, MTXMODE_APPLY);
 
         sizeModifider = (LINK_IS_CHILD) ? (1.0f / 1.35f) : 1.0f;
 
