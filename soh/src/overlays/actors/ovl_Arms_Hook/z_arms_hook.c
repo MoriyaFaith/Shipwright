@@ -344,7 +344,11 @@ void ArmsHook_Draw(Actor* thisx, PlayState* play) {
                   G_MTX_NOPUSH | G_MTX_LOAD | G_MTX_MODELVIEW);
         if (ArmsHook_CanUseNewLoadingMethod(gLinkHookshotTipDL)) { 
             // Use Alternate Equipment Loading behavior.
-            gSPDisplayList(POLY_OPA_DISP++, gLinkHookshotTipDL);
+            if (ArmsHook_CanUseNewLoadingMethod(gLinkLongshotTipDL) && player->itemAction == PLAYER_IA_LONGSHOT) { 
+                gSPDisplayList(POLY_OPA_DISP++, gLinkLongshotTipDL);
+            } else {
+                gSPDisplayList(POLY_OPA_DISP++, gLinkHookshotTipDL);
+            }
         } else { // Use vanilla behavior.
             gSPDisplayList(POLY_OPA_DISP++, gLinkAdultHookshotTipDL);
         }
